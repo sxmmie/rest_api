@@ -7,6 +7,7 @@ use crate::controller::{create_user, delete_user, get_user_by_id, list_users, up
 
 mod controller;
 mod model;
+mod user_service;
 
 #[tokio::main]
 async fn main() {

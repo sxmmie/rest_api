@@ -2,6 +2,7 @@ use sqlx::{Error, PgPool, postgres::PgPoolOptions};
 
 use crate::model::{User, UserInfo};
 
+#[derive(Clone)]
 pub struct UserService {
     pool: PgPool,
 }
@@ -17,16 +18,16 @@ impl UserService {
     }
 
     pub async fn list_users(&self) -> Result<Vec<User>, Error> {
-        let users =
-            sqlx::query_as::<_, User>("SELECT id, name, occupation, email, phone FROM users")
-                .fetch_all(&self.pool)
-                .await?;
+        let users = sqlx::query_as::<_, User>("SELECT id, name, occupation, email, phone FROM users")
+            .fetch_all(&self.pool)
+            .await?;
         Ok(users)
     }
 
     pub async fn get_users_by_id(&self, id: i32) -> Result<User, Error> {
         let user = sqlx::query_as::<_, User>("SELECT id, name, occupation, email, phone FROM users where id = $1")
-            .bind(id).fetch_one(&self.pool)
+            .bind(id)
+            .fetch_one(&self.pool)
             .await?;
         Ok(user)
     }
@@ -41,4 +42,8 @@ impl UserService {
             .await?;
         Ok(())
     }
+
+    pub async fn update_user(&self, id: i32) -> Result<(), Error> {}
+
+    pub async fn delete_user(&self, id: i32) -> Result<(), Error> {}
 }

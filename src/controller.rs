@@ -1,24 +1,56 @@
-use axum::{Json, extract::Path, http::StatusCode};
-use serde_json::Value;
+use axum::{Extension, Json, extract::Path, http::StatusCode};
 
-use crate::model::User;
+use crate::{
+    model::{User, UserInfo},
+    user_service::UserService,
+};
 
-pub async fn list_users() -> (StatusCode, Json<Value>) {
-    // get users
+pub async fn list_users(service: Extension<UserService>) -> Result<Json<Vec<User>>, StatusCode> {
+    match service.list_users().await {
+        Ok(users) => Ok(Json(users)),
+        Err(ex) => {
+            eprintln!("{:?}", ex);
+            Err(StatusCode::INTERNAL_SERVER_ERROR)
+        }
+    }
 }
 
-pub async fn get_user_by_id(Path(id): Path<u64>) -> (StatusCode, Json<Value>) {
-    // get user
+pub async fn get_user_by_id(service: Extension<UserService>, Path(id): Path<i32>) -> Result<Json<User>, StatusCode> {
+    match service.get_users_by_id(id).await {
+        Ok(user) => Ok(Json(user)),
+        Err(ex) => {
+            eprintln!("{:?}", ex);
+            Err(StatusCode::INTERNAL_SERVER_ERROR)
+        }
+    }
 }
 
-pub async fn create_user(Json(user): Json<User>) -> StatusCode {
-    // create user
+pub async fn create_user(service: Extension<UserService>, Json(user): Json<UserInfo>) -> StatusCode {
+    match service.create_user(user).await {
+        Ok(_) => StatusCode::OK,
+        Err(ex) => {
+            eprintln!("{:?}", ex);
+            StatusCode::INTERNAL_SERVER_ERROR
+        }
+    }
 }
 
-pub async fn update_user(Path(id): axum::extract::Path<u64>, Json(user): Json<User>) -> StatusCode {
-    // update user
+pub async fn update_user(service: Extension<UserService>, Path(32): axum::extract::Path<i32>, Json(user): Json<User>) -> StatusCode {
+    match service.update_user(id, user).await {
+        Ok(_) => StatusCode::OK,
+        Err(ex) => {
+            eprintln!("{:?}", ex);
+            StatusCode::INTERNAL_SERVER_ERROR
+        }
+    }
 }
 
-pub async fn delete_user(Path(id): Path<u64>) -> StatusCode {
-    // delete user
+pub async fn delete_user(service: Extension<UserService>, Path(id): Path<u32>) -> StatusCode {
+    match service.delete_user(id).await {
+        Ok(_) => StatusCode::NO_CONTENT,
+        Err(ex) => {
+            eprintln!("{:?}", ex);
+            StatusCode::INTERNAL_SERVER_ERROR
+        }
+    }
 }

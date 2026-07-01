@@ -35,22 +35,22 @@ pub async fn create_user(service: Extension<UserService>, Json(user): Json<UserI
     }
 }
 
-pub async fn update_user(service: Extension<UserService>, Path(32): axum::extract::Path<i32>, Json(user): Json<User>) -> StatusCode {
-    match service.update_user(id, user).await {
-        Ok(_) => StatusCode::OK,
-        Err(ex) => {
-            eprintln!("{:?}", ex);
-            StatusCode::INTERNAL_SERVER_ERROR
-        }
-    }
-}
+// pub async fn update_user(service: Extension<UserService>, Path(32): axum::extract::Path<i32>, Json(user): Json<User>) -> StatusCode {
+//     match service.update_user(id, user).await {
+//         Ok(_) => StatusCode::OK,
+//         Err(ex) => {
+//             eprintln!("{:?}", ex);
+//             StatusCode::INTERNAL_SERVER_ERROR
+//         }
+//     }
+// }
 
-pub async fn delete_user(service: Extension<UserService>, Path(id): Path<u32>) -> StatusCode {
-    match service.delete_user(id).await {
-        Ok(_) => StatusCode::NO_CONTENT,
-        Err(ex) => {
-            eprintln!("{:?}", ex);
-            StatusCode::INTERNAL_SERVER_ERROR
-        }
-    }
-}
+// pub async fn delete_user(service: Extension<UserService>, Path(id): Path<u32>) -> StatusCode {
+//     match service.delete_user(id).await {
+//         Ok(_) => StatusCode::NO_CONTENT,
+//         Err(ex) => {
+//             eprintln!("{:?}", ex);
+//             StatusCode::INTERNAL_SERVER_ERROR
+//         }
+//     }
+// }
